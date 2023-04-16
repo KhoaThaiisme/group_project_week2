@@ -1,3 +1,4 @@
+
 class ParkingGarage:
     def __init__(self):
         self.tickets = list(range(1, 21))
@@ -73,4 +74,3 @@ class ParkingGarage:
 
 garage = ParkingGarage()
 garage.start_parking()
-

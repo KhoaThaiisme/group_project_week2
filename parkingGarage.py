@@ -1,112 +1,79 @@
-# Our code start here
 
-class Garage:
-    current_ticket = {}
-    '''
-        current_ticket: {
-            {
-                price: price
-                paid: False/True
-            }
-        }
-    '''
-    # parking = False
-    def __init__(self, tickets = 20, parking_spaces = 20, price = 0, parking = False):
-        self.tickets = tickets
-        self.parking_spaces = parking_spaces
-        self.price = price
-        self.parking = parking
 
-    def driver(self):
+class ParkingGarage:
+    def __init__(self):
+        self.tickets = list(range(1, 21))
+        self.parked_cars = {}
+
+    def park_car(self):
+        if not self.tickets:
+            print("Sorry, the garage is full.")
+            return
+        ticket = self.tickets.pop(0)
+        park_time = self.get_park_time()
+        self.parked_cars[ticket] = (park_time, False)
+        print(f"Your ticket number is {ticket}. You have parked for {park_time} minutes.")
+        print(self.parked_cars)
+
+    def get_park_time(self):
         while True:
-            res = input('Would you like to park? ').lower()
-            if res == 'yes':
-                self.parking = True
-                self.add()
-            if res == 'no':
+            park_time = input("How long would you like to park? (15, 30, or 60 minutes): ")
+            if park_time not in ["15", "30", "60"]:
+                print("Invalid input. Please choose 15, 30, or 60 minutes.")
+            else:
+                return int(park_time)
+
+    def pay_for_parking(self):
+        ticket = self.get_ticket()
+        if ticket not in self.parked_cars:
+            print("Invalid ticket number.")
+            return
+        if self.parked_cars[ticket][1]:
+            print("Your ticket has already been paid.")
+            return
+        payment = self.get_payment_amount(self.parked_cars[ticket][0])
+        print(f"Your payment of ${payment} has been accepted. You have 15 minutes to leave.")
+        self.parked_cars[ticket] = (self.parked_cars[ticket][0], True)
+
+    def get_ticket(self):
+        return int(input("Please enter your ticket number: "))
+
+
+    def get_payment_amount(self, park_time):
+        if park_time == 15:
+            return 5
+        elif park_time == 30:
+            return 9
+        elif park_time == 60:
+            return 16
+        else:
+            return 0
+
+    def leave_garage(self):
+        ticket = self.get_ticket()
+        if ticket not in self.parked_cars:
+            print("Invalid ticket number.")
+            return
+        if not self.parked_cars[ticket][1]:
+            self.pay_for_parking()
+        print("Thank you, have a nice day!")
+        self.tickets.append(ticket)
+        del self.parked_cars[ticket]
+
+    def start_parking(self):
+        while True:
+            action = input("What would you like to do? (park, pay, leave, or quit): ")
+            if action == "park":
+                self.park_car()
+            elif action == "pay":
+                self.pay_for_parking()
+            elif action == "leave":
+                self.leave_garage()
+            elif action == "quit":
+                print("Thank you, have a nice day!")
                 break
+            else:
+                print("Invalid input. Please choose park, pay, leave, or quit.")
 
-    def leaving(self):
-        leave = input('are you exiting? \n')
-        while True:
-            paid = True
-            
-            print('Thank you, have a nice day')
-            
-    
-
-    def add(self):
-        ticket = input('How long would you like to park in minutes? 15 minutes, 30 minutes, 1 hour, 2 hour, overnight? ')
-        while True:
-            self.tickets -= 1
-            self.parking_spaces -= 1
-            if ticket == '15 minutes':
-                paying = input('Your choice of parking time of 15 minutes is $2 \n')
-                if paying == 'paid':
-                    self.current_ticket['price'] = 2
-                    self.current_ticket['paid'] = True
-                    print('Thank you, have a nice day')
-                    break
-            if ticket == '30 minutes':
-                paying = input('Your choice of parking time of 30 minutes is $4 \n')
-                if paying == 'paid':
-                    self.current_ticket['price'] = 4
-                    self.current_ticket['paid'] = True
-                    print('Thank you, have a nice day')
-                    break
-            if ticket == '1 hour':
-                paying = input('Your choice of parking time of 60 minutes is $5 \n')
-                if paying == 'paid':
-                    self.current_ticket['price'] = 5
-                    self.current_ticket['paid'] = True
-                    print('Thank you, have a nice day')
-                    break
-            if ticket == '2 hours':
-                paying = input('Your choice of parking time of 2 hours is $9 \n')
-                if paying == 'paid':
-                    self.current_ticket['price'] = 9
-                    self.current_ticket['paid'] = True
-                    print('Thank you, have a nice day')
-                    break
-            if ticket == 'overnight':
-                paying = input('Your choice of parking time of overnight is $20 \n')
-                if paying == 'paid':
-                    self.current_ticket['price'] = 20
-                    self.current_ticket['paid'] = True
-                    print('Thank you, have a nice day')
-                    break
-            # else: 
-            #     self.current_ticket[ticket] = {
-            #         'price': price,
-            #         'paid': False
-            #     }
-            self.show()
-    def show(self):
-        print(self.current_ticket)
-        print(f'current tickets left is {self.tickets}')
-        print(f'current parking spots is {self.parking_spaces}')
-
-
-
-new_parking = Garage();
-
-new_parking.driver()
-
-
-
-
-        # if ticket not in self.current_ticket[ticket]:
-        #     print('Thank you, have a nice day!')
-        #     self.tickets += 1
-        #     self.parking_spaces += 1
-  
-
-        
-
-#    # def time_for_parking(self):
-#     #    ticket = True
-        
-
-    
-
-
+garage = ParkingGarage()
+garage.start_parking()
